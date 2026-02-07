@@ -23,7 +23,7 @@ In a warehouse fulfillment center, orders arrive with different priority levels 
 
 ```
 ├── main.py                     # Entry point
-├── swiggy_problem/
+├── optimization_problem/
 │   ├── config.py               # Configuration (shifts, constraints, cutoffs)
 │   ├── core_logic.py           # ATC scoring and duration estimation
 │   ├── data_loader.py          # CSV loading and preprocessing
