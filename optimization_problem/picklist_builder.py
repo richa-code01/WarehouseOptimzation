@@ -1,14 +1,16 @@
 import pandas as pd
 from datetime import datetime, timedelta
-from typing import List
+from typing import List, Optional
 from collections import defaultdict
 from .config import Config
-from .core_logic import LogicCore
+from .core_logic import LogicCore, ScoringStrategy, ATCScoringStrategy
+
 
 class PicklistBuilder:
-    def __init__(self, df: pd.DataFrame, start_time: datetime):
+    def __init__(self, df: pd.DataFrame, start_time: datetime, strategy: Optional[ScoringStrategy] = None):
         self.df = df
         self.current_time = start_time
+        self.strategy = strategy or ATCScoringStrategy()
 
     def generate_picklists(self) -> List[dict]:
         picklists = []
@@ -39,7 +41,7 @@ class PicklistBuilder:
                     remaining_qty = remaining[key]
                     if remaining_qty > 0:
                         item_for_score = {**item, 'order_qty': remaining_qty}
-                        atc_score = LogicCore.calculate_atc_score(item_for_score, self.current_time)
+                        atc_score = self.strategy.calculate_score(item_for_score, self.current_time)
                         
                         # Check if picking this item completes the order
                         is_completing = (order_remaining_qty[item['order_id']] == remaining_qty)
